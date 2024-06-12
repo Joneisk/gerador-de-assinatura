@@ -24,7 +24,9 @@ const paPhones = {
 
 const unidadesPorPA=
 {
-  "Matriz":["TI","SE","ASDA"],
+  "Matriz":["Recuperação de Crédito","Crédito","Tecnologia da Informação",
+  "Controles Internos e Riscos","Comercial","Cadastro e Vistoria","Gestão de Pessoas","Comunicação e Marketing","Contabilidade",
+  "Governança Corporativa","Produtos e Serviços","Financeira/Administrativa"],
   "01":["Rede de Atendimento"],
 }
 
