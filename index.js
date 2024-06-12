@@ -1,136 +1,232 @@
 // encontra o botao
-const buttonCopiar = document.getElementById('btn-copiar')
-//configura a funcao que sera chamada uando ele for pressionado
+const buttonCopiar = document.getElementById('btn-copiar');
+//configura a funcao que sera chamada quando ele for pressionado
 buttonCopiar.onclick = copiar;
+
+const paPhones = {
+  "Matriz": "18 2101 5478",
+  "01": "18 2101 5861",
+  "02": "18 2101 5862",
+  "03": "67 3304 8314",
+  "04": "67 3304 5112",
+  "05": "18 2101 5492",
+  "06": "67 2107 7550",
+  "07": "67 3522 6978",
+  "08": "18 2101 5481",
+  "09": "18 2101 8728",
+  "10": "18 2101 8709",
+  "11": "18 2101 5463",
+  "12": "17 2137 9543",
+  "13": "18 3303 3678",
+  "14": "18 2122 2081",
+  "15": "18 2122 2079",
+};
+
+const unidadesPorPA=
+{
+  "Matriz":["TI","SE","ASDA"],
+  "01":["Rede de Atendimento"],
+}
+
+const cargosPorPA = {
+  "Matriz": ["Analista", "Gerente", "Estagiário","Diretor","Presidencia"],
+  "01": [
+    "Agente de Atendimento", 
+    "Agente de Atendimento/Caixa", 
+    "Assistente de Gerência", 
+    "Aprendiz", 
+    "Estagiário", 
+    "Gerente de Agência", 
+    "Gerente de Atendimento", 
+    "Gerente de Relacionamento"
+  ],
+  // Adicione os demais PAs e seus respectivos cargos
+};
+
+document.getElementById('PA').addEventListener('change', function () {
+  const paValue = this.value;
+  const phone = paPhones[paValue] || "";
+  document.getElementById('celular').value = phone;
+  //document.getElementById('celular-assinatura').href = "https://wa.me/55" + phone.replace(/\D/g, ''); // Remove caracteres não numéricos
+  //document.getElementById('celular-assinatura').innerText = phone;
+  updateCargos(paValue);
+  updateUnidades(paValue);
+  btn();
+});
+
+function updateUnidades(paValue) {
+  const unidadeSelect = document.getElementById('unidade');
+  unidadeSelect.innerHTML = ''; // Limpar todas as opções
+
+  if (paValue === "Matriz") {
+    unidadesPorPA["Matriz"].forEach(unidade => {
+      const option = document.createElement('option');
+      option.value = unidade;
+      option.text = unidade;
+      unidadeSelect.add(option);
+    });
+  } 
+  else if (["01", "02", "03", "04", "05", "06", "07", "11", "12", "13", "14", "15"].includes(paValue)) 
+  {
+    unidadesPorPA["01"].forEach(unidade => {
+      const option = document.createElement('option');
+      option.value = unidade;
+      option.text = unidade;
+      unidadeSelect.add(option);
+    });
+  } 
+  else 
+  {
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.text = 'Nenhuma unidade disponível';
+    unidadeSelect.add(defaultOption);
+  }
+}
+
+
+function updateCargos(paValue) {
+  const cargosSelect = document.getElementById('cargos');
+  cargosSelect.innerHTML = ''; // Limpar todas as opções
+
+  if (paValue === "Matriz") {
+    cargosPorPA["Matriz"].forEach(cargo => {
+      const option = document.createElement('option');
+      option.value = cargo;
+      option.text = cargo;
+      cargosSelect.add(option);
+    });
+  } 
+  else if (["01", "02", "03", "04", "05", "06", "07", "11", "12", "13", "14", "15"].includes(paValue)) 
+  {
+    cargosPorPA["01"].forEach(cargo => {
+      const option = document.createElement('option');
+      option.value = cargo;
+      option.text = cargo;
+      cargosSelect.add(option);
+    });
+  } 
+  else 
+  {
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.text = 'Nenhum cargo disponível';
+    cargosSelect.add(defaultOption);
+  }
+}
+
 
 // Encontra as inputs
 const nomeInput = document.getElementById('nome');
 const sobrenomeInput = document.getElementById('sobrenome');
 const celularInput = document.getElementById('celular');
 const cargosInput = document.getElementById('cargos');
+const unidadesInput= document.getElementById('unidade');
 
-// adiciona um metodo que realiza uma funcao quando um eventoacontece
+// adiciona um metodo que realiza uma funcao quando um evento acontece
 // no caso o evento chama-se: "input" e ocorre quando o texto digitado se altera
 // ou quando o valor selecionado altera
-nomeInput.addEventListener('input', () => btn())
-sobrenomeInput.addEventListener('input', () => btn())
-celularInput.addEventListener('input', () => btn())
-cargosInput.addEventListener('input', () => btn())
+nomeInput.addEventListener('input', btn);
+sobrenomeInput.addEventListener('input', btn);
+celularInput.addEventListener('input', btn);
+cargosInput.addEventListener('input', btn);
+unidadesInput.addEventListener('input',btn);
+
 
 // encontra os campos a serem preenchidos na assinatura
 const nomeCompletoField = document.getElementById('nome-assinatura');
 const celularField = document.getElementById('celular-assinatura');
 const cargoField = document.getElementById('cargo-assinatura');
+const unidadeField=document.getElementById('unidade-assinatura');
+
 
 function btn() {
   // recebe as informacoes das inputs
-  var nome = nomeInput.value;
-  var sobrenome = sobrenomeInput.value;
-  var celular = celularInput.value;
-  var cargo = cargosInput.options[cargosInput.selectedIndex].value;
+  const nome = nomeInput.value;
+  const sobrenome = sobrenomeInput.value;
+  const celular = celularInput.value;
+  const cargo = cargosInput.options[cargosInput.selectedIndex].value;
+  const unidade = unidadesInput.options[unidadesInput.selectedIndex].value;
 
-  let nomeCompleto = nome + ' ' + sobrenome
+  let nomeCompleto = nome + ' ' + sobrenome;
 
   // coloca os valores nos lugares na assinatura
   nomeCompletoField.innerHTML = editaNome(nomeCompleto);
-  celularField.innerHTML = editaCelular(celular)
+  celularField.innerHTML = editaCelular(celular);
   cargoField.innerHTML = cargo;
+  unidadeField.innerHTML = unidade;
+
 
   // configura os atributos de link
   celularField.setAttribute('href', `https://wa.me/55${editaCelular(celular).replace(/ /g, '')}`);
-  // wa.me e o site que redireciona para o whatsapp com o numero a frente
+}
+function obrigatorio()
+{
+  if(nome=="")
+    {
+      console.log("Preencha o campo Nome");
+    }
+    else
+      console.log("Sucesso");
 }
 
 function editaNome(nome) {
-  let palavras = nome.split(' ')
-  // separa o nome em palavras: "diego ferreira" -> ["diego", "ferreira"]
+  let palavras = nome.split(' ');
   for (let i = 0; i < palavras.length; i++) {
-    // itera entre cada palavra, transformando a primeira letra em maiuscula
-    palavras[i] = primeirasMaiusculas(palavras[i])
+    palavras[i] = primeirasMaiusculas(palavras[i]);
   }
   if (palavras.join(' ') == ' ') {
-    // se não houver nada, quer dizer que o usuario apagou tudo nas inputs
-    // portanto, retorna o valor inicial
-    return 'Nome Sobrenome'
+    return 'Nome Sobrenome';
   }
-  // senão, retorna as palavras juntas
-  //["Diego", "Ferreira"] -> "Diego Ferreira"
-  return palavras.join(' ')
+  return palavras.join(' ');
 }
 
 function primeirasMaiusculas(palavra) {
-  // Retorna a palavra com a primeira letra maiuscula
   let n = palavra.length;
   if (n > 1) {
-    // se a palavra tiver mais de uma letra
-    let primeiraLetra = palavra[0].toUpperCase() //coloca a primeira maiuscula
-    let resto = palavra.slice(1) //coloca da segunda letra para frente: "diego".slice(1) = "iego"
-    palavra = primeiraLetra + resto; //junta tudo
-    return palavra
+    let primeiraLetra = palavra[0].toUpperCase();
+    let resto = palavra.slice(1);
+    palavra = primeiraLetra + resto;
+    return palavra;
   } else {
-    // se for só uma letra, coloca ela maiuscula
-    return palavra.toUpperCase()
+    return palavra.toUpperCase();
   }
 }
 
 function editaCelular(cel) {
   try {
-    // retira todos os espacos e simbolos que o usuario possa ter digitado
-    cel = cel.replace(/ /g, '');
-    cel = cel.replace(/\(/g, '');
-    cel = cel.replace(/\)/g, '');
-    cel = cel.replace(/\-/g, '');
+    cel = cel.replace(/ /g, '').replace(/\(/g, '').replace(/\)/g, '').replace(/\-/g, '');
     let n = cel.length;
-    // retorna o celular no formato certo com espaçamentos
-    // para facilitar a visualizacao esse processo e feito em partes:
     if (n === 0) {
-      // se nao houver numero, retorna o padrao
-      return '99 99999 9999'
+      return '99 99999 9999';
     } else if (n < 3) {
-      // se for menor que 3, o usuario so digitou o DDD
-      // portanto retorna o que ele digitou
-      return cel
+      return cel;
     } else if (n < 7) {
-      // se for menor que 7, o usuario so digitou o DDD e os 5 primeiros numeros
-      // portanto retorna o que ele digitou com o espaco depois do DDD
-      // ex: "14997..." -> "14 997..."
-      return cel.slice(0, 2) + ' ' + cel.slice(2)
+      return cel.slice(0, 2) + ' ' + cel.slice(2);
     } else if (n <= 11) {
-      // se for menor ou igual a 11
-      // o usuario so digitou o DDD e os 5 primeiros numeros e iniciou (ou completou) o resto
-      // portanto retorna o que ele digitou com o espaco depois do DDD e mais um espaço separando o umero em 2
-      // ex: "141234567..." -> "14 12345 67..."
-      return cel.slice(0, 2) + ' ' + cel.slice(2, 7) + ' ' + cel.slice(7)
+      return cel.slice(0, 2) + ' ' + cel.slice(2, 7) + ' ' + cel.slice(7);
     } else {
-      // se passar de 11, envie a mensagem de erro
-      alert('Coloque o telefone no formato 12 12345 1234 (com 11 números)')
-      return '99 99999 9999'
+      alert('Coloque o telefone no formato 12 12345 1234 (com 11 números)');
+      return '99 99999 9999';
     }
   } catch (err) { }
 }
 
 function copiar() {
-  // seleciona a area onde a assinatura esta
   var area = document.getElementById("assinatura-div");
   if (document.body.createTextRange) {
-    // para browsers antigos
-    // cria um elemento chamado "range", move a area para dentro dele e o seleciona
     var range = document.body.createTextRange();
     range.moveToElementText(area);
     range.select();
-    // executa o comando de copiar
     document.execCommand("Copy");
-    alert("Copiado para a area de transferência");
+    alert("Copiado para a área de transferência");
   } else if (window.getSelection) {
-    // para os outros
-    // cria um elemento chamado "range", move a area para dentro dele e o seleciona
     var selection = window.getSelection();
     var range = document.createRange();
     range.selectNodeContents(area);
     selection.removeAllRanges();
     selection.addRange(range);
-    // executa o comando de copiar
     document.execCommand("Copy");
-    alert("Copiado para a area de transferência");
+    alert("Copiado para a área de transferência");
   }
 }
