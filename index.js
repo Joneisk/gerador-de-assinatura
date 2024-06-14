@@ -1,6 +1,4 @@
-// encontra o botao
 const buttonCopiar = document.getElementById('btn-copiar');
-// configura a funcao que sera chamada quando ele for pressionado
 buttonCopiar.onclick = copiar;
 
 const paPhones = {
@@ -39,27 +37,26 @@ const emailPA = {
   "14": "agencia320914@sicoob.com.br",
   "15": "agencia320915@sicoob.com.br",
 };
-/*
-const emailArea={
-  "Recuperação de Crédito":
-  "Crédito":
-  "Tecnologia da Informação":
-  "Controles Internos e Riscos":
-  "Comercial":
-  "Cadastro e Vistoria": 
-  "Gestão de Pessoas": 
-  "Comunicação e Marketing": 
-  "Contabilidade":"",
-  "Governança Corporativa":"",
-  "Produtos e Serviços":"",
-  "Financeira/Administrativa":"",
 
-}*/
-
+const emailArea = {
+  "Recuperação de Crédito": "recuperacao3209@sicoob.com.br",
+  "Crédito": "credito3209@sicoob.com.br",
+  "Tecnologia da Informação": "ti3209@sicoob.com.br",
+  "Controles Internos e Riscos": "processos3209@sicoob.com.br",
+  "Gerente Regional 1": "regional320901@sicoob.com.br",
+  "Gerente Regional 2": "regional320902@sicoob.com.br",
+  "Cadastro e Vistoria": "cadastro3209@sicoob.com.br",
+  "Gestão de Pessoas": "rh3209@sicoob.com.br",
+  "Comunicação e Marketing": "marketing3209@sicoob.com.br",
+  "Contabilidade": "contabilidade3209@sicoob.com.br",
+  "Governança Corporativa": "governanca3209@sicoob.com.br",
+  "Produtos e Serviços": "produtos3209@sicoob.com.br",
+  "Financeira/Administrativa": "financeiro3209@sicoob.com.br",
+}
 
 const unidadesPorPA = {
   "Matriz": ["Recuperação de Crédito", "Crédito", "Tecnologia da Informação",
-    "Controles Internos e Riscos", "Comercial", "Cadastro e Vistoria", "Gestão de Pessoas", "Comunicação e Marketing", "Contabilidade",
+    "Controles Internos e Riscos", "Gerente Regional 1", "Gerente Regional 2", "Cadastro e Vistoria", "Gestão de Pessoas", "Comunicação e Marketing", "Contabilidade",
     "Governança Corporativa", "Produtos e Serviços", "Financeira/Administrativa"],
   "01": ["Rede de Atendimento"],
 };
@@ -82,14 +79,11 @@ const cargosPorPA = {
 document.getElementById('PA').addEventListener('change', function () {
   const paValue = this.value;
   const phone = paPhones[paValue] || "";
- 
-  const email=emailPA[paValue] || "";
-  
   document.getElementById('celular').value = phone;
-  document.getElementById('email-assinatura').innerText = email;
-  document.getElementById('email-assinatura').href = "mailto:" + email;
   updateCargos(paValue);
   updateUnidades(paValue);
+  updateEmail(paValue);
+
   btn();
 });
 
@@ -103,6 +97,9 @@ function updateUnidades(paValue) {
       option.value = unidade;
       option.text = unidade;
       unidadeSelect.add(option);
+    });
+    unidadeSelect.addEventListener('change', function () {
+      updateEmail(paValue);
     });
   }
   else if (["01", "02", "03", "04", "05", "06", "07", "11", "12", "13", "14", "15"].includes(paValue)) {
@@ -147,6 +144,17 @@ function updateCargos(paValue) {
     defaultOption.text = 'Nenhum cargo disponível';
     cargosSelect.add(defaultOption);
   }
+}
+
+function updateEmail(paValue) {
+  let email = emailPA[paValue] || "";
+  if (paValue === "Matriz") {
+    const unidadeSelect = document.getElementById('unidade');
+    const unidadeValue = unidadeSelect.value;
+    email = emailArea[unidadeValue] || "";
+  }
+  document.getElementById('email-assinatura').innerText = email;
+  document.getElementById('email-assinatura').href = "mailto:" + email;
 }
 
 // Encontra as inputs
